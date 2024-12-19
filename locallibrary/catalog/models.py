@@ -3,6 +3,7 @@ from django.db import models
 from django.urls import reverse  # To generate URLS by reversing URL patterns
 from django.db.models import UniqueConstraint
 from django.db.models.functions import Lower
+from isbn_field import ISBNField
 
 class Genre(models.Model):
     """Model representing a book genre (e.g. Science Fiction, Non Fiction)."""
@@ -60,10 +61,7 @@ class Book(models.Model):
     # Author as a string rather than object because it hasn't been declared yet in file.
     summary = models.TextField(
         max_length=1000, help_text="Enter a brief description of the book")
-    isbn = models.CharField('ISBN', max_length=13,
-                            unique=True,
-                            help_text='13 Character <a href="https://www.isbn-international.org/content/what-isbn'
-                                      '">ISBN number</a>')
+    isbn = ISBNField()
     genre = models.ManyToManyField(
         Genre, help_text="Select a genre for this book")
     # ManyToManyField used because a genre can contain many books and a Book can cover many genres.
@@ -93,6 +91,8 @@ class Book(models.Model):
         return ', '.join(genre.name for genre in self.genre.all()[:3])
 
     display_genre.short_description = 'Genre'
+
+    
 
 
 
